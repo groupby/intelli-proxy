@@ -3,8 +3,8 @@ Intelli-Proxy
 
 The goals of intelli-proxy are 
 1. An annotation service to record and replay integration tests.
-1. records are stored at `src/test/resources/replay` by default.
-1. A set of modules that know how to populate data into the source systems.
+1. records are stored at `src/test/resources/intelliproxy` by default.
+1. A set of modules that know how to populate data into an inline version of those systems.
 
 The record parameter is overridden by the system property `intelliproxy.record` property.
 
@@ -28,7 +28,7 @@ Usage
 // Or with raw yaml.
 @ElasticsearchReplayProxy(record = false, port = 9200, 
     yaml = "clusterName: groupby\n" 
-         + "records=[{'id': '1', 'title':'title'}]");
+         + "records: [{'id': '1', 'title':'title'}]");
 
 ```
 
