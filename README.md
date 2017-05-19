@@ -6,8 +6,8 @@ Service to record and replay integration tests.
 
 Modules that know how to populate data into the source systems.
 
-<img scr="src/main/resources/images/proxyRecord.jpg">
-<img scr="src/main/resources/images/proxyReplay.jpg">
+![Recording Mode](src/main/resources/images/proxyRecord.jpg?raw=true "Proxy recording flow")
+![Recording Mode](src/main/resources/images/proxyReplay.jpg?raw=true "Proxy replay flow")
 
 
 Usage
