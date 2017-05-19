@@ -1,9 +1,13 @@
 Intelli-Proxy
 ===
 
+
 Service to record and replay integration tests.
 
 Modules that know how to populate data into the source systems.
+
+<img scr="src/main/resources/images/proxyRecord.jpg">
+<img scr="src/main/resources/images/proxyReplay.jpg">
 
 
 Usage
@@ -11,8 +15,7 @@ Usage
 
 ```java
 
-// store all the TCP requests, stores them as binary if record is set to true, replay's 
-// them if record is set to false.
+// Proxy's requests and stores them to disk if record is set to true.
 @DumbReplayProxy(record = false, localPort = 9200, liveHost = "somehost", livePort = "8080");
 
 // Can be used as an annotation that preloads data into a running elasticsearch
