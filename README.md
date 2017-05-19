@@ -19,21 +19,20 @@ Usage
 ```java
 
 // Proxy's requests and stores them to disk if record is set to true.
-@DumbReplayProxy(record = false, localPort = 9200, liveHost = "somehost", livePort = "8080");
+@SimpleReplayProxy(record = false, localPort = 9200, liveHost = "somehost", livePort = "8080");
 
 // Can be used as an annotation that preloads data into a running elasticsearch
-@ElasticSearchReplayProxy(record = false, port = 9200, 
-    data = { "classpath://globalSetup.yaml", "../elasticData.yaml]" });
+@ElasticsearchReplayProxy(record = false, port = 9200, 
+    data = { "classpath://globalSetup.yaml", "../elasticData.yaml" });
 
 // Or with raw yaml.
-@ElasticSearchReplayProxy(record = false, port = 9200, 
+@ElasticsearchReplayProxy(record = false, port = 9200, 
     yaml = "clusterName: groupby\n" 
-           + "records=[{'id': '1', 'title':'title'}]");
+         + "records=[{'id': '1', 'title':'title'}]");
 
 ```
 
 ### Record mode
-
 
 1. Integration test / Regression Test tries to hit the service.
 1. Proxy intercepts and sends the request along to the live service
@@ -43,7 +42,6 @@ Usage
 ![Recording Mode](src/main/resources/images/proxyRecord.jpg?raw=true "Proxy recording flow")
 
 ### Replay mode
-
 
 1. Integration test / Regression Test tries to hit the service.
 1. Proxy intercepts the request and reads it from disk. 
