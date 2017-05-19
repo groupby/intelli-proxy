@@ -28,7 +28,7 @@ public class SimpleReplayProxyTest {
   }
 
   @Test
-  public void testWithPseudoServern() throws IOException {
+  public void testWithPseudoServer() throws IOException {
     pseudoServer.setResource("test.html", "body");
     System.out.println(proxy.getConnectedPort());
     String bodyProxy = read("http://localhost:" + proxy.getConnectedPort() + "/test.html");
