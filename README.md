@@ -18,6 +18,8 @@ Usage
 @ElasticSearchReplayProxy(record = false, port = 9200, data = "../elasticData.yaml");
 
 // Or with raw yaml.
-@ElasticSearchReplayProxy(record = false, port = 9200, yaml = "clusterName: groupby\nrecords=[{'id': '1', 'title':'title'}]");
+@ElasticSearchReplayProxy(record = false, port = 9200, 
+    yaml = "clusterName: groupby\n" 
+           + "records=[{'id': '1', 'title':'title'}]");
 
 ```
