@@ -22,7 +22,8 @@ Usage
 @DumbReplayProxy(record = false, localPort = 9200, liveHost = "somehost", livePort = "8080");
 
 // Can be used as an annotation that preloads data into a running elasticsearch
-@ElasticSearchReplayProxy(record = false, port = 9200, data = { "classpath://globalSetup.yaml", "../elasticData.yaml]" });
+@ElasticSearchReplayProxy(record = false, port = 9200, 
+    data = { "classpath://globalSetup.yaml", "../elasticData.yaml]" });
 
 // Or with raw yaml.
 @ElasticSearchReplayProxy(record = false, port = 9200, 
