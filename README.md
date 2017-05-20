@@ -6,11 +6,13 @@ The goals of intelli-proxy are
 1. records are stored at `src/test/resources/intelliproxy` by default.
 1. A set of modules that know how to populate data into an inline version of those systems.
 
-The record parameter is overridden by the system property `intelliproxy.record` property.
+The record parameter can be omitted and defined by the system property `intelliproxy.record` property.
 
-The directory is overridden by the system property `intelliproxy.directory`
+The cache directory can be omitted and defined by the system property `intelliproxy.directory`
 
-The property `record` is set to false by default.
+The property `record` is set to `false` by default.
+
+the property `directory` is set to `src/test/resources` by default.
 
 
 Usage
@@ -19,15 +21,16 @@ Usage
 ```java
 
 // Proxy's requests and stores them to disk if record is set to true.
-@SimpleReplayProxy(record = false, localPort = 9200, liveHost = "somehost", livePort = "8080");
+@Rule
+SimpleReplayProxy("liveHost", "8080", true, "src/test/resources"); // Optional record / location
 
 // Can be used as an annotation that preloads data into a running elasticsearch
-@ElasticsearchReplayProxy(record = false, port = 9200, 
-    data = { "classpath://globalSetup.yaml", "../elasticData.yaml" });
+@Rule
+ElasticsearchReplayProxy(new String[]{ "classpath://globalSetup.yaml", "../elasticData.yaml" });
 
 // Or with raw yaml.
-@ElasticsearchReplayProxy(record = false, port = 9200, 
-    yaml = "clusterName: groupby\n" 
+@Rule
+ElasticsearchReplayProxy("clusterName: groupby\n" 
          + "records: [{'id': '1', 'title':'title'}]");
 
 ```

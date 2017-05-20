@@ -6,6 +6,18 @@
     <groupId>com.groupbyinc</groupId>
     <artifactId>intelli-proxy</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <packaging>jar</packaging>
 
     <name>GroupBy - Intelli Proxy - Service</name>
@@ -28,9 +40,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.terma</groupId>
-            <artifactId>javaniotcpproxy</artifactId>
-            <version>1.1</version>
+            <groupId>org.mock-server</groupId>
+            <artifactId>mockserver-netty</artifactId>
+            <version>3.10.7</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
