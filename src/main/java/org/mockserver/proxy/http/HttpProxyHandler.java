@@ -185,13 +185,19 @@ public class HttpProxyHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
   private HttpResponse sendRequest(HttpRequest request, OutboundHttpRequest outboundHttpRequest) {
 
+    DirectProxy dp = (DirectProxy) this.server;
+    HttpResponse loadedResponse = fileBackedCache.load(request, dp.getCacheLocation());
+    if (!dp.isRecord() && loadedResponse !=null) {
+      return loadedResponse;
+    }
+
     HttpResponse httpResponse = filters.applyOnResponseFilters(outboundHttpRequest, httpClient.sendRequest(outboundHttpRequest, onwardSslStatusUnknown));
     // allow for filter to set response to null
     if (httpResponse == null) {
       httpResponse = notFoundResponse();
     }
     if (httpResponse != null) {
-      fileBackedCache.save(request, httpResponse, ((DirectProxy)server).getCacheLocation());
+      fileBackedCache.save(request, httpResponse, dp.getCacheLocation());
     }
     return httpResponse;
   }

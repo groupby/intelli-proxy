@@ -37,6 +37,7 @@ public class DirectProxy implements Proxy {
     // netty
     private final EventLoopGroup bossGroup = new NioEventLoopGroup();
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
+    private final boolean record;
     private StopEventQueue stopEventQueue = new StopEventQueue();
     private Channel channel;
     // remote socket
@@ -45,12 +46,13 @@ public class DirectProxy implements Proxy {
 
     /**
      * Start the instance using the ports provided
-     *  @param localPort  the local port to expose
+     * @param localPort  the local port to expose
      * @param remoteHost the hostname of the remote server to connect to
      * @param remotePort the port of the remote server to connect to
      * @param cacheLocation where the files should be saved.
+     * @param record
      */
-    public DirectProxy(final Integer localPort, final String remoteHost, final Integer remotePort, String cacheLocation) {
+    public DirectProxy(final Integer localPort, final String remoteHost, final Integer remotePort, String cacheLocation, boolean record) {
         if (localPort == null) {
             throw new IllegalArgumentException("You must specify a local port");
         }
@@ -64,6 +66,7 @@ public class DirectProxy implements Proxy {
             throw new IllegalArgumentException("You must specify a cache location");
         }
 
+        this.record = record;
         this.cacheLocation = cacheLocation;
         hasStarted = SettableFuture.create();
 
@@ -142,5 +145,9 @@ public class DirectProxy implements Proxy {
 
     public void setCacheLocation(String cacheLocation) {
         this.cacheLocation = cacheLocation;
+    }
+
+    public boolean isRecord() {
+        return record;
     }
 }

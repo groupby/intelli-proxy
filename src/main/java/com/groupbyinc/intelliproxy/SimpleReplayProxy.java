@@ -35,7 +35,7 @@ public class SimpleReplayProxy extends ExternalResource {
   protected void before() throws Throwable {
     super.before();
     connectedPort = PortFactory.findFreePort();
-    proxy = new ClientAndProxy(connectedPort, liveHost, livePort, cacheDirectory);
+    proxy = new ClientAndProxy(connectedPort, liveHost, livePort, cacheDirectory, record);
 
   }
 

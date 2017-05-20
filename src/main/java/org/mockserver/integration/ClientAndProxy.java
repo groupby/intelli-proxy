@@ -10,9 +10,9 @@ public class ClientAndProxy extends ProxyClient {
 
     private final DirectProxy httpProxy;
 
-    public ClientAndProxy(Integer port, String remoteHost, Integer remotePort, String cacheLocation) {
+    public ClientAndProxy(Integer port, String remoteHost, Integer remotePort, String cacheLocation, boolean record) {
         super("localhost", port);
-        httpProxy = new DirectProxy(port, remoteHost, remotePort, cacheLocation);
+        httpProxy = new DirectProxy(port, remoteHost, remotePort, cacheLocation, record);
     }
 
     public boolean isRunning() {

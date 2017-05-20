@@ -25,7 +25,10 @@ public class SimpleReplayProxyTest {
   private PseudoServer pseudoServer = new PseudoServer();
 
   @Rule
-  public SimpleReplayProxy proxy = new SimpleReplayProxy("localhost", pseudoServer.getConnectedPort(), true, "target/intelliproxy");
+  public SimpleReplayProxy proxyRecording = new SimpleReplayProxy("localhost", pseudoServer.getConnectedPort(), true, "target/intelliproxy");
+
+  @Rule
+  public SimpleReplayProxy proxyPlayback = new SimpleReplayProxy("localhost", pseudoServer.getConnectedPort(), false, "target/intelliproxy");
 
   @Before
   @After
@@ -41,7 +44,7 @@ public class SimpleReplayProxyTest {
   public void testWithPseudoServer() throws IOException {
     String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
     pseudoServer.setResource(methodName + ".html", methodName);
-    String bodyProxy = read("http://localhost:" + proxy.getConnectedPort() + "/" + methodName + ".html");
+    String bodyProxy = read("http://localhost:" + proxyRecording.getConnectedPort() + "/" + methodName + ".html");
     String bodyPseudoServer = read("http://localhost:" + pseudoServer.getConnectedPort() + "/" + methodName + ".html");
     assertEquals(methodName, bodyProxy);
     assertEquals(bodyProxy, bodyPseudoServer);
@@ -49,7 +52,7 @@ public class SimpleReplayProxyTest {
 
   @Test
   public void recordingCreatesCacheAndHitsLiveService() throws IOException {
-    proxy.setCacheDirectory("target/intelliproxy");
+    proxyRecording.setCacheDirectory("target/intelliproxy");
     String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
     AtomicInteger hitPseudo = new AtomicInteger();
     pseudoServer.setResource(methodName + ".html", new PseudoServlet() {
@@ -59,14 +62,45 @@ public class SimpleReplayProxyTest {
         return new WebResource(methodName);
       }
     });
-    String bodyProxy = read("http://localhost:" + proxy.getConnectedPort() + "/" + methodName + ".html");
+    String bodyProxy = read("http://localhost:" + proxyRecording.getConnectedPort() + "/" + methodName + ".html");
     assertEquals("Did not hit the pseudo server", 1, hitPseudo.get());
     String bodyPseudoServer = read("http://localhost:" + pseudoServer.getConnectedPort() + "/" + methodName + ".html");
     assertEquals("Did not hit the pseudo server", 2, hitPseudo.get());
     assertEquals(bodyProxy, bodyPseudoServer);
 
     assertTrue("Did not create cache", new File("target/intelliproxy/49fecf90059e89460f9d6e450b17af98").exists());
+  }
 
+  @Test
+  public void testPlaybackDoesNotHitLiveService() throws IOException {
+    proxyPlayback.setCacheDirectory("target/intelliproxy");
+    //noinspection ResultOfMethodCallIgnored
+    new File("target/intelliproxy").mkdirs();
+    String response = "{\n" +
+        "  \"statusCode\" : 200,\n" +
+        "  \"headers\" : [ {\n" +
+        "    \"name\" : \"Content-Length\",\n" +
+        "    \"values\" : [ \"33\" ]\n" +
+        "  }, {\n" +
+        "    \"name\" : \"Content-Type\",\n" +
+        "    \"values\" : [ \"text/html\" ]\n" +
+        "  } ],\n" +
+        "  \"body\" : \"testPlaybackDoesNotHitLiveService\"\n" +
+        "}";
+    FileUtils.write(new File("target/intelliproxy/17816f65161b804f69639478c0974d88"), response, "UTF-8");
+    String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+    AtomicInteger hitPseudo = new AtomicInteger();
+    pseudoServer.setResource(methodName + ".html", new PseudoServlet() {
+      @Override
+      public WebResource getGetResponse() throws IOException {
+        hitPseudo.incrementAndGet();
+        return new WebResource(methodName);
+      }
+    });
+
+    String bodyProxy = read("http://localhost:" + proxyPlayback.getConnectedPort() + "/" + methodName + ".html");
+    assertEquals("Hit the pseudo server", 0, hitPseudo.get());
+    assertEquals(methodName, bodyProxy);
   }
 
 
