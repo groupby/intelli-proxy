@@ -11,6 +11,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 public class SimpleReplayProxyTest {
@@ -103,6 +105,16 @@ public class SimpleReplayProxyTest {
     assertEquals(methodName, bodyProxy);
   }
 
+  @Test
+  public void testMissingResourceCausesException() throws IOException {
+    String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+    try {
+      read("http://localhost:" + proxyPlayback.getConnectedPort() + "/" + methodName + ".html");
+      fail("Should throw exception for nonexistent url");
+    } catch (FileNotFoundException e) {
+      // expected
+    }
+  }
 
   private String read(String urlLocation) throws IOException {
     InputStream in = new URL(urlLocation).openConnection().getInputStream();
