@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.contrib.java.lang.system.ClearSystemProperties;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,15 +23,19 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 
-public class SimpleReplayProxyTest {
+public class HttpReplayProxyTest {
 
   private PseudoServer pseudoServer = new PseudoServer();
 
   @Rule
-  public SimpleReplayProxy proxyRecording = new SimpleReplayProxy("localhost", pseudoServer.getConnectedPort(), true, "target/intelliproxy");
+  public HttpReplayProxy proxyRecording = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort(), true, "target/intelliproxy");
 
   @Rule
-  public SimpleReplayProxy proxyPlayback = new SimpleReplayProxy("localhost", pseudoServer.getConnectedPort(), false, "target/intelliproxy");
+  public HttpReplayProxy proxyPlayback = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort(), false, "target/intelliproxy");
+
+  @Rule
+  public final ClearSystemProperties myPropertyIsCleared = new ClearSystemProperties("intelliproxy.record");
+
 
   @Before
   @After
@@ -38,8 +43,36 @@ public class SimpleReplayProxyTest {
     FileUtils.deleteDirectory(new File("target/intelliproxy"));
   }
 
-  public SimpleReplayProxyTest() throws IOException {
+  public HttpReplayProxyTest() throws IOException {
     // Required to use a rule that throws an exception in the constructor
+  }
+
+  @Test
+  public void testProgrammaticOverride() throws IOException {
+    HttpReplayProxy test1 = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort(), false, "target/intelliproxy");
+    assertEquals(false, test1.isRecord());
+    HttpReplayProxy test2 = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort(), true, "target/intelliproxy");
+    assertEquals(true, test2.isRecord());
+
+    System.setProperty("intelliproxy.record",  "true");
+    HttpReplayProxy test3 = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort(), false, "target/intelliproxy");
+    assertEquals(false, test3.isRecord());
+    HttpReplayProxy test4 = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort(), true, "target/intelliproxy");
+    assertEquals(true, test4.isRecord());
+
+
+    System.setProperty("intelliproxy.record",  "true");
+    HttpReplayProxy test5 = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort());
+    assertEquals(true, test5.isRecord());
+    HttpReplayProxy test6 = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort());
+    assertEquals(true, test6.isRecord());
+
+    System.setProperty("intelliproxy.record",  "false");
+    HttpReplayProxy test7 = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort());
+    assertEquals(false, test7.isRecord());
+    HttpReplayProxy test8 = new HttpReplayProxy("localhost", pseudoServer.getConnectedPort());
+    assertEquals(false, test8.isRecord());
+
   }
 
   @Test

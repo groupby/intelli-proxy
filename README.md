@@ -1,7 +1,7 @@
-Intelli-Proxy
+Intelliproxy
 ===
 
-The goals of intelli-proxy are 
+The goals of intelliproxy are 
 1. An annotation service to record and replay integration tests.
 1. records are stored at `src/test/resources/intelliproxy` by default.
 1. A set of modules that know how to populate data into an inline version of those systems.

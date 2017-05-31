@@ -1,7 +1,7 @@
 # Compiled class file
 *.class
 .idea
-intelli-proxy.iml
+intelliproxy.iml
 target
 
 # Log file
